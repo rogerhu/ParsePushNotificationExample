@@ -2,6 +2,7 @@ package com.test;
 
 
 import com.parse.ParseCloud;
+import com.parse.ParseInstallation;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -15,6 +16,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -62,10 +66,16 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		
-		HashMap<String, String> payload = new HashMap<>();
-		payload.put("customData", "My message");
-		ParseCloud.callFunctionInBackground("pushChannelTest", payload);
+
+		JSONObject payload = new JSONObject();
+		try {
+			payload.put("sender", ParseInstallation.getCurrentInstallation().getInstallationId());
+		} catch (JSONException e) {
+
+		}
+        HashMap<String, String> data = new HashMap<>();
+        data.put("customData", payload.toString());
+		ParseCloud.callFunctionInBackground("pingReply", data);
 	}
 
 	
